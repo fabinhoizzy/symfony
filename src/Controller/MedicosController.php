@@ -91,8 +91,9 @@ class MedicosController extends AbstractController
         }
 
         //atualizando os dados
-        $medicoExistente->crm = $medicoEnviado->crm;
-        $medicoExistente->nome = $medicoEnviado->nome;
+        $medicoExistente
+            ->setCrm($medicoEnviado->getCrm())
+            ->setNome($medicoEnviado->getNome());
 
         //Não precisa usar $this->entityManager->persist($medico); pois o doctrine já está gerenciando
 
