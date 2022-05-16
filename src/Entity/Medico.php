@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Internal\TentativeType;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\EspecialidadeRepository")
  */
 
 class Medico implements \JsonSerializable

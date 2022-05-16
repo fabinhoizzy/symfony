@@ -5,3 +5,47 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
+
+medicos:
+    path: /medicos
+    controller: App\Controller\MedicosController::buscarTodos
+    methods:
+        - GET
+medico:
+    path: /medicos/{id}
+    controller: App\Controller\MedicosController::buscarUm
+    methods:
+        - GET
+criar_medico:
+    path: /medicos
+    controller: App\Controller\MedicosController::novo
+    methods:
+        - POST
+
+remove_medico:
+    path: /medicos/{id}
+    controller: App\Controller\MedicosController::remove
+    methods:
+        - DELETE
+
+especialidades:
+    path: /especialidades
+    controller: App\Controller\EspecialidadeController::buscarTodos
+    methods:
+        - GET
+criar_especialidade:
+    path: /especialidades
+    controller: App\Controller\EspecialidadeController::novo
+    methods:
+        - POST
+
+especialidade:
+    path: /especialidades/{id}
+    controller: App\Controller\EspecialidadeController::buscarUm
+    methods:
+        - GET
+remove_especialidade:
+    path: /especialidades/{id}
+    controller: App\Controller\EspecialidadeController::remove
+    methods:
+        - DELETE
