@@ -6,17 +6,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ExtratorDadosRequest
 {
-    private function buscaDadosRequest (Request $request)
+    public function buscaDadosRequest (Request $request)
     {
         $queryString = $request->query->all();
         $dadosOrdenacao = array_key_exists('sort', $queryString)
             ? $queryString['sort']
-            : null;
+            : [];
         unset($queryString['sort']);
+
         $paginaAtual = array_key_exists('page', $queryString)
             ? $queryString['page']
             : 1;
         unset($queryString['page']);
+
         $itensPorPagina = array_key_exists('itensPorPagina', $queryString)
             ? $queryString['itensPorPagina']
             : 5;
