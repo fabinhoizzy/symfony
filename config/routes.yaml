@@ -21,7 +21,11 @@ criar_medico:
     controller: App\Controller\MedicosController::novo
     methods:
         - POST
-
+atualiza_medico:
+    path: /medicos/{id}
+    controller: App\Controller\MedicosController::atualiza
+    methods:
+        - PUT
 remove_medico:
     path: /medicos/{id}
     controller: App\Controller\MedicosController::remove
@@ -44,6 +48,11 @@ especialidade:
     controller: App\Controller\EspecialidadeController::buscarUm
     methods:
         - GET
+atualiza_especialidade:
+    path: /especialidades/{id}
+    controller: App\Controller\EspecialidadeController::atualiza
+    methods:
+        - PUT
 remove_especialidade:
     path: /especialidades/{id}
     controller: App\Controller\EspecialidadeController::remove
