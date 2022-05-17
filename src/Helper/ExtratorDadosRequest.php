@@ -11,7 +11,7 @@ class ExtratorDadosRequest
         $queryString = $request->query->all();
         $dadosOrdenacao = array_key_exists('sort', $queryString)
             ? $queryString['sort']
-            : [];
+            : null;
         unset($queryString['sort']);
 
         $paginaAtual = array_key_exists('page', $queryString)

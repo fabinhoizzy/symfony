@@ -3,26 +3,32 @@
 namespace App\Helper;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResponseFactory
 {
-    private bool $sucesso;
-    private $conteudoResposta;
-    private int $paginaAtual;
-    private int $itensPorPagina;
-    private int $statusResposta;
-
     /**
-     * @param bool $sucesso
-     * @param $conteudoResposta
-     * @param int $statusResposta
-     * @param int|null $paginaAtual
-     * @param int|null $itensPorPagina
+     * @var bool
      */
+    private $sucesso;
+    /**
+     * @var int
+     */
+    private $paginaAtual;
+    /**
+     * @var int
+     */
+    private $itensPorPagina;
+    private $conteudoResposta;
+    /**
+     * @var int
+     */
+    private $statusResposta;
+
     public function __construct(
         bool $sucesso,
         $conteudoResposta,
-        int $statusResposta = 200,
+        int $statusResposta = Response::HTTP_OK,
         int $paginaAtual = null,
         int $itensPorPagina = null
         )

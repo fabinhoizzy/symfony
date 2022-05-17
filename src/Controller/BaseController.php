@@ -117,5 +117,5 @@ abstract class BaseController extends AbstractController
             return $fabrica->getResponse();
         }
     }
-    abstract public function atualizarEntidadeExistente($id, $entidade);
+    abstract public function atualizarEntidadeExistente(int $id, $entidade);
 }

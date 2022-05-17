@@ -21,13 +21,19 @@ class EspecialidadeController extends BaseController
         parent::__construct($repository, $entityManager, $factory, $extratorDadosRequest);
     }
 
-    /**
-     * @param Especialidade $entidadeExistente
-     * @param Especialidade $entidadeEnviada
-     */
-    public function atualizarEntidadeExistente($entidadeExistente, $entidadeEnviada)
+    public function atualizarEntidadeExistente(int $id, $entidade)
     {
+        /**
+         * @var Especialidade $entidadeExistente
+         */
+
+        $entidadeExistente = $this->repository->find($id);
+        if (is_null($entidadeExistente)) {
+            throw new \InvalidArgumentException();
+        }
+
         $entidadeExistente
-            ->setDescricao($entidadeEnviada->getDescricao());
+            ->setDescricao($entidade->getDescricao());
+        return $entidadeExistente;
     }
 }

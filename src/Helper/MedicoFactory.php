@@ -7,6 +7,10 @@ use App\Repository\EspecialidadeRepository;
 
 class MedicoFactory implements EntidadeFactory
 {
+    /**
+     * @var EspecialidadeRepository
+     */
+
     private EspecialidadeRepository $especialidadeRepository;
 
     public function __construct(EspecialidadeRepository $especialidadeRepository)
