@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.6",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
+        "firebase/php-jwt": "^6.2",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/console": "6.0.*",
         "symfony/dotenv": "6.0.*",
@@ -18,8 +19,8 @@
         "symfony/maker-bundle": "^1.41",
         "symfony/proxy-manager-bridge": "6.0.*",
         "symfony/runtime": "6.0.*",
-        "symfony/yaml": "6.0.*",
-      "ext-http": "*"
+        "symfony/security-bundle": "6.0.*",
+        "symfony/yaml": "6.0.*"
     },
     "config": {
         "allow-plugins": {
@@ -71,5 +72,8 @@
             "allow-contrib": false,
             "require": "6.0.*"
         }
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4"
     }
 }
