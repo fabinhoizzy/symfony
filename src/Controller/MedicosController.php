@@ -8,6 +8,7 @@ use App\Helper\MedicoFactory;
 use App\Repository\MedicosRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,10 +30,11 @@ class MedicosController extends BaseController
         MedicoFactory $medicoFactory,
         MedicosRepository $medicosRepository,
         ExtratorDadosRequest $extratorDadosRequest,
-        CacheItemPoolInterface $cache
+        CacheItemPoolInterface $cache,
+        LoggerInterface $logger
     )
     {
-        parent::__construct($medicosRepository, $entityManager, $medicoFactory, $extratorDadosRequest, $cache);
+        parent::__construct($medicosRepository, $entityManager, $medicoFactory, $extratorDadosRequest, $cache, $logger);
         $this->medicoFactory = $medicoFactory;
         $this->medicosRepository = $medicosRepository;
     }
