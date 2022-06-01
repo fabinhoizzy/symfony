@@ -7,6 +7,8 @@ use App\Helper\ExtratorDadosRequest;
 use App\Helper\ResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,6 +20,7 @@ abstract class BaseController extends AbstractController
     protected EntityManagerInterface $entityManager;
     protected EntidadeFactory $factory;
     protected ExtratorDadosRequest $extratorDadosRequest;
+    private CacheItemPoolInterface $cache;
 
     /**
      * @param ObjectRepository $repository
@@ -26,24 +29,30 @@ abstract class BaseController extends AbstractController
     public function __construct(
         ObjectRepository $repository,
         EntityManagerInterface $entityManager,
-        EntidadeFactory $factory,
-        ExtratorDadosRequest $extratorDadosRequest)
+        EntidadeFactory $entityFactory,
+        ExtratorDadosRequest $extratorDadosRequest,
+        CacheItemPoolInterface $cache
+    )
     {
         $this->repository = $repository;
         $this->entityManager = $entityManager;
-        $this->factory = $factory;
+        $this->entityFactory = $entityFactory;
         $this->extratorDadosRequest = $extratorDadosRequest;
+        $this->cache = $cache;
     }
 
-    public function novo(Request $request): Response
+    public function novo(Request $request, ManagerRegistry $doctrine): Response
     {
-        $dadosRequest = $request->getContent();
-        $entidade = $this->factory->criarEntidade($dadosRequest);
+        $entity = $this->entityFactory->criarEntidade($request->getContent());
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($entity);
+        $entityManager->flush();
 
-        $this->entityManager->persist($entidade);
-        $this->entityManager->flush();
+        $cacheItem = $this->cache->getItem($this->cachePrefix() . $entity->getId());
+        $cacheItem->set($entity);
+        $this->cache->save($cacheItem);
 
-        return  new JsonResponse($entidade);
+        return  new JsonResponse($entity);
     }
 
     public function buscarTodos(Request $request)
@@ -73,11 +82,13 @@ abstract class BaseController extends AbstractController
 
     public function buscarUm(int $id): Response
     {
-        $entidade = $this->repository->find($id);
-        $statusResposta = is_null($entidade) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
+        $entity = $this->cache->hasItem($this->cachePrefix() . $id)
+            ? $this->cache->getItem($this->cachePrefix() . $id)->get()
+            : $entity = $this->repository->find($id);
+        $statusResposta = is_null($entity) ? Response::HTTP_NO_CONTENT : Response::HTTP_OK;
         $fabricaResposta = new ResponseFactory(
             true,
-            $entidade,
+            $entity,
             $statusResposta
         );
 
@@ -89,6 +100,8 @@ abstract class BaseController extends AbstractController
         $entidade = $this->repository->find($id);
         $this->entityManager->remove($entidade);
         $this->entityManager->flush();
+
+        $this->cache->deleteItem($this->cachePrefix() . $id);
 
         return new Response('', Response::HTTP_NO_CONTENT);
 
@@ -102,6 +115,10 @@ abstract class BaseController extends AbstractController
             $entidadeExistente = $this->atualizarEntidadeExistente($id, $entidade);
             $this->entityManager->flush();
 
+            $cacheItem = $this->cache->getItem($this->cachePrefix() . $id);
+            $cacheItem->set($entidadeExistente);
+            $this->cache->save($cacheItem);
+
             $fabrica = new ResponseFactory(
                 true,
                 $entidadeExistente,
@@ -111,11 +128,12 @@ abstract class BaseController extends AbstractController
         } catch (\InvalidArgumentException $ex) {
             $fabrica = new ResponseFactory(
                 false,
-                'Recurso não encotrado',
+                'Recurso não encontrado',
                 Response::HTTP_NOT_FOUND
             );
             return $fabrica->getResponse();
         }
     }
     abstract public function atualizarEntidadeExistente(int $id, $entidade);
+    abstract public function cachePrefix(): string;
 }
